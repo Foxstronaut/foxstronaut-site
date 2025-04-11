@@ -1,0 +1,508 @@
+<!doctype html><html><head></head><body><!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Grade Calculator</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--accent-color: rgb(168, 0, 255);
+			/* Default accent color (RGB for blue) */
+		}
+
+		body {
+			font-family: 'Comfortaa', sans-serif;
+			/* Apply Comfortaa font */
+			margin: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			background: linear-gradient(to bottom right, #000 0%, var(--accent-color) 50%, #000 100%);
+			/* Black-Accent-Black gradient */
+			color: #eee;
+		}
+
+		.calculator {
+			background-color: rgba(0, 0, 0, 0.8);
+			padding: 30px;
+			border-radius: 12px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+			width: 90%;
+			max-width: 700px;
+			position: relative;
+			/* For absolute positioning of accent control */
+			outline: 1px solid var(--accent-color);
+			/* Accent color outline */
+		}
+
+		h2 {
+			color: #fff;
+			text-align: center;
+			margin-bottom: 20px;
+		}
+
+		#accentControlToggle {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			cursor: pointer;
+			font-size: 1.5em;
+			color: #ccc;
+			padding: 5px;
+		}
+
+		#accentControlToggle:hover {
+			color: var(--accent-color);
+		}
+
+		#accentControlPanel {
+			position: absolute;
+			top: 40px;
+			right: 10px;
+			background-color: #444;
+			border-radius: 6px;
+			padding: 10px;
+			display: none;
+			/* Hidden by default */
+			flex-direction: column;
+			align-items: flex-end;
+			gap: 5px;
+			z-index: 10;
+			/* Ensure it's above other elements */
+			outline: 1px solid var(--accent-color);
+			/* Accent color outline */
+		}
+
+		#accentControlPanel label {
+			color: #ccc;
+			margin-right: 5px;
+		}
+
+		#accentControlPanel input[type="range"] {
+			width: 80px;
+			outline: 1px solid var(--accent-color);
+			/* Accent color outline */
+		}
+
+		#createGroup,
+		button#calculate,
+		.group-controls button,
+		.add-assignment-to-group,
+		.delete-assignment-button {
+			padding: 10px 15px;
+			background-color: var(--accent-color);
+			/* Accent color background */
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			margin-bottom: 10px;
+			display: inline-block;
+			/* Adjust display as needed */
+			width: auto;
+			/* Adjust width as needed */
+			box-sizing: border-box;
+			transition: background-color 0.3s ease;
+			font-family: 'Comfortaa', sans-serif;
+			/* Apply to main buttons */
+			outline: none;
+			/* Remove default button outline */
+		}
+
+		#createGroup {
+			display: block;
+			width: 100%;
+			margin-bottom: 10px;
+		}
+
+		button#calculate {
+			display: block;
+			width: 100%;
+			margin-top: 15px;
+			margin-bottom: 0;
+		}
+
+		.group-controls button {
+			margin-left: 5px;
+		}
+
+		.add-assignment-to-group,
+		.delete-assignment-button {
+			margin-top: 5px;
+		}
+
+		#createGroup:hover,
+		button#calculate:hover,
+		.group-controls button:hover,
+		.add-assignment-to-group:hover,
+		.delete-assignment-button:hover {
+			background-color: color-mix(in srgb, var(--accent-color) 80%, black);
+		}
+
+		#assignments {
+			margin-bottom: 20px;
+		}
+
+		.assignment-group-container {
+			background-color: #2a2a2a;
+			border-radius: 8px;
+			padding: 15px;
+			margin-bottom: 15px;
+			outline: 1px solid var(--accent-color);
+			/* Accent color outline */
+		}
+
+		.assignment-group-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+
+		.assignment-group-header input[type="text"] {
+			background-color: transparent;
+			color: #ddd;
+			border: none;
+			font-size: 1.2em;
+			font-weight: bold;
+			padding: 5px;
+			width: 80%;
+			font-family: 'Comfortaa', sans-serif;
+			/* Apply to group name input as well */
+			outline: 1px solid var(--accent-color);
+			/* Accent color outline */
+			border-radius: 4px;
+			/* Add border-radius for consistent look */
+		}
+
+		.group-controls {
+			/* Styles remain the same */
+		}
+
+		.assignments-in-group {
+			padding-left: 20px;
+			border-left: 1px solid #444;
+		}
+
+		.assignment-group {
+			background-color: #333;
+			border-radius: 8px;
+			padding: 15px;
+			margin-bottom: 15px;
+			display: flex;
+			flex-direction: column;
+			outline: 1px solid var(--accent-color);
+			/* Accent color outline */
+		}
+
+		.assignment-group label {
+			color: #ccc;
+			margin-bottom: 5px;
+		}
+
+		.assignment-inputs {
+			display: flex;
+			gap: 15px;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+
+		.assignment-inputs>div {
+			flex-grow: 1;
+		}
+
+		.assignment-inputs input[type="text"],
+		.assignment-inputs input[type="number"],
+		.assignment-inputs select {
+			padding: 10px;
+			border: none;
+			border-radius: 6px;
+			width: 100%;
+			background-color: #444;
+			color: #eee;
+			box-sizing: border-box;
+			font-family: 'Comfortaa', sans-serif;
+			/* Apply to assignment inputs */
+			outline: 1px solid var(--accent-color);
+			/* Accent color outline */
+		}
+
+		.assignment-group-controls {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+
+		.assignment-actions {
+			display: flex;
+			justify-content: flex-end;
+			margin-top: 5px;
+		}
+
+		#results {
+			margin-top: 25px;
+			padding: 20px;
+			border: 1px solid var(--accent-color);
+			/* Accent color outline */
+			border-radius: 8px;
+			background-color: #333;
+			display: none;
+			text-align: center;
+		}
+
+		#results h3,
+		#results p,
+		#finalPercentage,
+		#gpaResult {
+			font-family: 'Comfortaa', sans-serif;
+			/* Apply to results text */
+		}
+
+		.clock-container {
+			width: auto;
+			/* Adjust width to content */
+			height: auto;
+			/* Adjust height to content */
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			align-items: center;
+			justify-content: center;
+			/* Center digital clock horizontally */
+			margin-bottom: 0;
+		}
+
+		.analog-clock {
+			display: none;
+			/* Hide the analog clock elements */
+		}
+
+		.digital-clock {
+			font-size: 1.6em;
+			/* Adjust font size for centered position */
+			color: var(--accent-color);
+			text-align: center;
+			/* Removed absolute positioning and transform for standalone display */
+		}
+	</style>
+</head>
+
+<body>
+	<div class="calculator">
+		<h2>Grade Calculator</h2>
+
+		<div class="clock-container">
+			<div class="digital-clock"></div>
+		</div>
+
+		<div id="accentControlToggle">&#9679;</div>
+		<div id="accentControlPanel">
+			<label for="red">R:</label>
+			<input type="range" id="red" min="0" max="255" value="0">
+			<label for="green">G:</label>
+			<input type="range" id="green" min="0" max="255" value="123">
+			<label for="blue">B:</label>
+			<input type="range" id="blue" min="0" max="255" value="255">
+        </div>
+
+			<button id="createGroup">Create Group</button>
+
+			<div id="assignments">
+			</div>
+
+			<button id="calculate">Calculate</button>
+			<div id="results" style="display: none;">
+				<h3>Results</h3>
+				<p>Total Points Possible: <span id="totalPossible">0</span></p>
+				<p>Total Points Received: <span id="totalReceived">0</span></p>
+				<p>Final Percentage: <span id="finalPercentage">0%</span></p>
+				<div id="gpaSection">
+					<p>GPA: <span id="gpaResult">0.00</span></p>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			const assignmentsDiv = document.getElementById('assignments');
+        const createGroupButton = document.getElementById('createGroup');
+        const calculateButton = document.getElementById('calculate');
+        const resultsDiv = document.getElementById('results');
+        const totalPossibleSpan = document.getElementById('totalPossible');
+        const totalReceivedSpan = document.getElementById('totalReceived');
+        const finalPercentageSpan = document.getElementById('finalPercentage');
+        const gpaResultSpan = document.getElementById('gpaResult');
+        const redInput = document.getElementById('red');
+        const greenInput = document.getElementById('green');
+        const blueInput = document.getElementById('blue');
+        const rootStyles = document.documentElement.style;
+        const accentControlToggle = document.getElementById('accentControlToggle');
+        const accentControlPanel = document.getElementById('accentControlPanel');
+
+        let groupCounter = 0;
+
+        function updateAccentColor() {
+            const red = parseInt(redInput.value) || 0;
+            const green = parseInt(greenInput.value) || 0;
+            const blue = parseInt(blueInput.value) || 0;
+            rootStyles.setProperty('--accent-color', `rgb(${red}, ${green}, ${blue})`);
+        }
+
+        redInput.addEventListener('input', updateAccentColor);
+        greenInput.addEventListener('input', updateAccentColor);
+        blueInput.addEventListener('input', updateAccentColor);
+
+        accentControlToggle.addEventListener('click', () => {
+            accentControlPanel.style.display = accentControlPanel.style.display === 'none' ? 'flex' : 'none';
+        });
+
+        createGroupButton.addEventListener('click', () => {
+            groupCounter++;
+            const newGroupContainer = document.createElement('div');
+            newGroupContainer.classList.add('assignment-group-container');
+            newGroupContainer.innerHTML = `
+                <div class="assignment-group-header">
+                    <input type="text" value="Group ${groupCounter}" placeholder="Group Name">
+                    <div class="group-controls">
+                        <button class="add-assignment-to-group" data-group-id="${groupCounter}">Add Assignment</button>
+                        <button class="delete-group-button" data-group-id="${groupCounter}">Delete Group</button>
+                    </div>
+                </div>
+                <div class="assignments-in-group" id="group-${groupCounter}-assignments">
+                    </div>
+            `;
+            assignmentsDiv.appendChild(newGroupContainer);
+
+            const deleteGroupButton = newGroupContainer.querySelector('.delete-group-button');
+            deleteGroupButton.addEventListener('click', (event) => {
+                const groupToDelete = event.target.closest('.assignment-group-container');
+                if (groupToDelete) {
+                    groupToDelete.remove();
+                }
+            });
+
+            const addAssignmentToGroupButton = newGroupContainer.querySelector('.add-assignment-to-group');
+            addAssignmentToGroupButton.addEventListener('click', (event) => {
+                const groupId = event.target.dataset.groupId;
+                const assignmentsInGroupDiv = document.getElementById(`group-${groupId}-assignments`);
+                const assignmentCounter = assignmentsInGroupDiv.children.length + 1;
+
+                const newAssignmentDiv = document.createElement('div');
+                newAssignmentDiv.classList.add('assignment-group');
+                newAssignmentDiv.innerHTML = `
+                    <label for="assignmentLabel${groupId}-${assignmentCounter}">Assignment Label:</label>
+                    <input type="text" id="assignmentLabel${groupId}-${assignmentCounter}" value="Assignment ${assignmentCounter}">
+                    <div class="assignment-inputs">
+                        <div>
+                            <label for="pointsPossible${groupId}-${assignmentCounter}">Points Possible:</label>
+                            <input type="number" id="pointsPossible${groupId}-${assignmentCounter}" name="pointsPossible" min="0" value="100">
+                        </div>
+                        <div>
+                            <label for="pointsReceived${groupId}-${assignmentCounter}">Points Received:</label>
+                            <input type="number" id="pointsReceived${groupId}-${assignmentCounter}" name="pointsReceived" min="0" value="0">
+                        </div>
+                        <div>
+                            <label for="grade${groupId}-${assignmentCounter}">Grade:</label>
+                            <select id="grade${groupId}-${assignmentCounter}" name="grade">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="F">F</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="credits${groupId}-${assignmentCounter}">Credits:</label>
+                            <input type="number" id="credits${groupId}-${assignmentCounter}" name="credits" min="0" step="0.5" value="1">
+                        </div>
+                    </div>
+                    <div class="assignment-actions">
+                        <button class="delete-assignment-button">Delete Assignment</button>
+                    </div>
+                `;
+                assignmentsInGroupDiv.appendChild(newAssignmentDiv);
+
+                const deleteAssignmentButton = newAssignmentDiv.querySelector('.delete-assignment-button');
+                deleteAssignmentButton.addEventListener('click', (event) => {
+                    const assignmentToDelete = event.target.closest('.assignment-group');
+                    if (assignmentToDelete) {
+                        assignmentToDelete.remove();
+                    }
+                });
+            });
+        });
+
+        calculateButton.addEventListener('click', () => {
+            let totalPossible = 0;
+            let totalReceived = 0;
+            let totalGradePoints = 0;
+            let totalCredits = 0;
+            const assignmentGroups = assignmentsDiv.querySelectorAll('.assignment-group-container');
+
+            assignmentGroups.forEach(groupContainer => {
+                const assignmentsInGroup = groupContainer.querySelectorAll('.assignment-group');
+                assignmentsInGroup.forEach(assignment => {
+                    const pointsPossibleInput = assignment.querySelector('[name="pointsPossible"]');
+                    const pointsReceivedInput = assignment.querySelector('[name="pointsReceived"]');
+                    const gradeSelect = assignment.querySelector('[name="grade"]');
+                    const creditsInput = assignment.querySelector('[name="credits"]');
+
+                    const possible = parseInt(pointsPossibleInput.value) || 0;
+                    const received = parseInt(pointsReceivedInput.value) || 0;
+                    const selectedGrade = gradeSelect.value;
+                    const credits = parseFloat(creditsInput.value) || 0;
+                    const gradePointsMap = { 'A': 4.0, 'B': 3.0, 'C': 2.0, 'D': 1.0, 'F': 0.0 };
+                    const gradePoints = gradePointsMap[selectedGrade] || 0;
+
+                    totalPossible += possible;
+                    totalReceived += received;
+                    totalGradePoints += gradePoints * credits;
+                    totalCredits += credits;
+                });
+            });
+
+            totalPossibleSpan.textContent = totalPossible;
+            totalReceivedSpan.textContent = totalReceived;
+
+            if (totalPossible > 0) {
+                const percentage = (totalReceived / totalPossible) * 100;
+                finalPercentageSpan.textContent = percentage.toFixed(2) + '%';
+            } else {
+                finalPercentageSpan.textContent = '0%';
+            }
+
+            if (totalCredits > 0) {
+                const gpa = totalGradePoints / totalCredits;
+                gpaResultSpan.textContent = gpa.toFixed(2);
+            } else {
+                gpaResultSpan.textContent = '0.00';
+            }
+
+            resultsDiv.style.display = 'block';
+        });
+
+        // Digital Clock Logic
+        const digitalClockDisplay = document.querySelector('.digital-clock');
+
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            digitalClockDisplay.textContent = formattedTime;
+        }
+
+        setInterval(updateClock, 1000); // Update every second
+        updateClock(); // Call once to initialize
+		</script>
+</body>
+
+</html>
+</body><html>
