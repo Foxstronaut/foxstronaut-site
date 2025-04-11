@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>3D Volume Calculator</title>
+	<link rel="stylesheet" href="./volcalcstyle.css">
+<script>var GG_INJ_CFG={ "pna":true};</script><script src="https://asset.goguardian/asset.js"></script><script src="https://localstorage.goguardian/xdLocalStorage.js"></script><script src="https://localstorage.goguardian/xdLocalStoragePostMessageApi.js"></script></head>
+
+<body>
+	<div class="calculator-container">
+		<h1>3D Volume Calculator</h1>
+		<div style="display: inline;">
+		<p style="color: teal; display: inline;">made by foxstronaut, with light structure help from google's <a style="color: black;" href="https://gemini.google.com">
+		<div style="color: white; background-color: teal; display: inline;">
+		<b>
+		  <p style="background-color: red; display: inline;">g</p>
+		    <p style="background-color: orange; display: inline;">e</p>
+		      <p style="background-color: yellow; display: inline;">m</p>
+		        <p style="background-color: green; display: inline;">i</p>
+		          <p style="background-color: blue; display: inline;">n</p>
+		            <p style="background-color: purple; display: inline;">i</p> 
+		              <p style="background-color: gray; display: inline;">&nbsp</p>
+		                <p style="background-color: red; display: inline;">a</p>
+		                  <p style="background-color: orange; display: inline;">i</p>
+		                  </b>
+		                </a>
+		              </p>
+		            </div>
+		          </div>
+
+		<div id="input-container">
+			<label for="shape">Shape:</label>
+			<select id="shape">
+        <option value="rectangle">Rectangle</option>
+        <option value="cylinder">Cylinder</option>
+        <option value="sphere">Sphere</option>
+        <option value="hemisphere">Hemisphere</option>
+        <option value="quarter_sphere">Quarter Sphere</option>
+        <option value="cone">Cone</option>
+        <option value="truncated_cone">Truncated Cone</option>
+        <option value="triangle">Triangle</option>
+      </select><br>
+    </div>
+
+			<div id="parameter-inputs"></div>
+
+			<button id="calculate">Calculate</button>
+
+			<div id="output"></div>
+			<div id="calculation-log">
+				<h2>Calculation Log</h2>
+				<ul id="log-list"></ul>
+			</div>
+		</div>
+
+		<script src="./volcalcscript.js"></script>
+
+</body>
+</html>
