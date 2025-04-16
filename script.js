@@ -1,5 +1,5 @@
 const initialWindowPositions = {};
-const mainIframe = document.querySelector('.mainif'); // Get the iframe element (though not used for dragging anymore)
+const mainIframe = document.querySelector('.mainif'); // Get the iframe element
 
 function toggleApp(appId) {
   const appWindow = document.getElementById(appId);
@@ -22,12 +22,20 @@ function openApp(appId) {
   }
 }
 
-//if loaded open about
-window.onload = function() {
+// Store initial positions
+document.addEventListener('DOMContentLoaded', () => {
+  const appWindows = document.querySelectorAll('.app-window');
+  appWindows.forEach(appWindow => {
+    initialWindowPositions[appWindow.id] = {
+      left: appWindow.style.left || '50%',
+      top: appWindow.style.top || '50%'
+    };
+  });
+
+  //if loaded open about
   setTimeout(() => {
     openApp('app3');
     let name = prompt("Welcome to My Website! What's Your Name?");
-    alert("Well Hello There " + name + "! Nice to Meet You.");
+    alert("Well Hello There " + name + "! Thanks for Visiting");
   }, 5000);
-};
-
+});
