@@ -1,4 +1,3 @@
-//Hello World, Git is SCAWYYY
 const initialWindowPositions = {};
 const mainIframe = document.querySelector('.mainif'); // Get the iframe element
 
@@ -12,6 +11,15 @@ function toggleApp(appId) {
     appWindow.style.top = initialWindowPositions[appId].top;
   }
 }
+// these 2 little shits do the same exact fucking thing
+// because one fucking function kept closing the app window
+// if I was faster than it, don't complain, it works.
+// 
+// with love,
+// -your friendly neighborhood web dev
+//
+//P.S. WHY THE FUCK DOES DRAGGABLE STUFF DO WIERD THINGS
+
 function openApp(appId) {
   const appWindow = document.getElementById(appId);
   appWindow.classList.add("active");
