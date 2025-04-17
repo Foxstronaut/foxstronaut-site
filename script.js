@@ -4,7 +4,9 @@ const mainIframe = document.querySelector('.mainif'); // Get the iframe element
 function toggleApp(appId) {
   const appWindow = document.getElementById(appId);
   appWindow.classList.toggle('active');
-
+//.. Draggable Shizz
+    //draggable shizz no workyyy
+//.. End Draggable Shizz
   if (appWindow.classList.contains('active')) {
     // Reset to the initial centered position
     appWindow.style.left = initialWindowPositions[appId].left;
@@ -43,8 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //if loaded open about
   setTimeout(() => {
-    openApp('app3');
     let name = prompt("Welcome to My Website! What's Your Name?");
-    alert("Well Hello There " + name + "! Thanks for Visiting");
+    if (name == null){
+      console.log("ooh an anonymous user");
+    }
+    else{
+      alert("Well Hello There " + name + "! Thanks for Visiting");
+      openApp('app3');
+    }
   }, 5000);
 });

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden; /* Prevent scrollbar for animation */
+        }
+
+        .container {
+            background-color: #222;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        h1 {
+            color: #eee;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        p {
+            color: #ccc;
+            margin-top: 10px;
+        }
+
+        .accent {
+            color: #64b5f6; /* Example accent color */
+        }
+
+        .error-message {
+            color: #ff6b6b; /* Red color for error */
+            font-weight: bold;
+            margin-top: 20px;
+            animation: pulse 1s infinite alternate;
+        }
+
+        /* Animation Styles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(black, black, black, cyan);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>One Moment!</h1>
+        <p>Attempting to redirect...</p>
+        <img src="https://media.tenor.com/plb3PY7f1LEAAAAM/ohhellothere-hellot-there.gif" style="display: none; width: 80%; height: 80%;">
+        <div id="error-container" class="error-message" style="display: none;"></div>
+    </div>
+
+    <script>
+        // This is where you would store your short code to URL mappings
+        const urlMap = {
+            "home": "../index.html",
+            "gh": "https://github.com/Foxstronaut" // Example
+            // Add more mappings here
+        };
+
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        function redirectUrl(shortCode) {
+            const longUrl = urlMap[shortCode];
+            const errorContainer = document.getElementById('error-container');
+
+            if (longUrl) {
+                // Redirect to the long URL
+                window.location.href = longUrl;
+            } else {
+                // Display an error message if the short code is not found
+                const container = document.querySelector('.container');
+                container.querySelector('h1').textContent = "Short URL Not Found";
+                container.querySelector('p').style.display = 'none';
+                container.querySelector('img').style.display = 'flex';
+                errorContainer.textContent = `Short code "${shortCode}" is invalid.`;
+                errorContainer.style.display = 'block';
+            }
+        }
+
+        // Get the value of the 'id' parameter from the URL (e.g., ?id=home)
+        const shortCode = getUrlParameter('id');
+
+        // Call the redirect function if a short code is present
+        if (shortCode) {
+            redirectUrl(shortCode);
+        } else {
+            const container = document.querySelector('.container');
+            container.querySelector('h1').textContent = "you're not supposed to be here...this is invalid";
+            container.querySelector('p').style.display = 'none';
+            container.querySelector('img').style.display = 'flex';
+            document.getElementById('error-container').textContent = "Please provide a short code in the URL (e.g., ?id=your_code).";
+            document.getElementById('error-container').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
